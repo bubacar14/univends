@@ -7,67 +7,68 @@ import {
     sendPasswordResetEmail,
     updateProfile,
     GoogleAuthProvider,
-    signInWithPopup
+    signInWithPopup,
+    getAuth
 } from 'firebase/auth';
 import { auth } from '../config/firebase';
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 export function useAuth() {
-    return useContext(AuthContext);
+    const context = useContext(AuthContext);
+    if (context === undefined) {
+        throw new Error('useAuth must be used within an AuthProvider');
+    }
+    return context;
 }
 
 export function AuthProvider({ children }) {
     const [currentUser, setCurrentUser] = useState(null);
-
     const [loading, setLoading] = useState(true);
-
-    function signup(email, password) {
-        return createUserWithEmailAndPassword(auth, email, password);
-    }
-
-    function login(email, password) {
-        return signInWithEmailAndPassword(auth, email, password);
-    }
-
-    function logout() {
-        return signOut(auth);
-    }
-
-    function resetPassword(email) {
-        return sendPasswordResetEmail(auth, email);
-    }
-
-    function updateUserProfile(profile) {
-        return updateProfile(auth.currentUser, profile);
-    }
-
-    function signInWithGoogle() {
-        const provider = new GoogleAuthProvider();
-        return signInWithPopup(auth, provider);
-    }
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, user => {
-            setCurrentUser(user);
-            setLoading(false);
-        });
-        return unsubscribe;
+        // Initialize auth state listener
+        const unsubscribe = onAuthStateChanged(
+            auth,
+            (user) => {
+                console.log('Auth state changed:', user ? 'User logged in' : 'User logged out');
+                setCurrentUser(user);
+                setLoading(false);
+            },
+            (error) => {
+                console.error('Auth state change error:', error);
+                setError(error);
+                setLoading(false);
+            }
+        );
+
+        // Cleanup subscription
+        return () => unsubscribe();
     }, []);
 
     const value = {
         currentUser,
-        signup,
-        login,
-        logout,
-        resetPassword,
-        updateUserProfile,
-        signInWithGoogle
+        loading,
+        error,
+        signup: (email, password) => createUserWithEmailAndPassword(auth, email, password),
+        login: (email, password) => signInWithEmailAndPassword(auth, email, password),
+        logout: () => signOut(auth),
+        resetPassword: (email) => sendPasswordResetEmail(auth, email),
+        updateUserProfile: (profile) => updateProfile(auth.currentUser, profile),
+        signInWithGoogle: () => {
+            const provider = new GoogleAuthProvider();
+            return signInWithPopup(auth, provider);
+        }
     };
 
     return (
         <AuthContext.Provider value={value}>
-            {!loading && children}
+            {!loading ? children : (
+                <div className="flex items-center justify-center min-h-screen">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
+                </div>
+            )}
         </AuthContext.Provider>
     );
 }
