@@ -61,7 +61,7 @@ export const userApi = {
   getProfile: () => fetchWithAuth('/users/profile'),
   updateProfile: (profileData) => fetchWithAuth('/users/profile', {
     method: 'POST',
-    body: productData
+    body: profileData
   }),
   getFavorites: () => fetchWithAuth('/users/favorites'),
   getUserProducts: () => fetchWithAuth('/users/products')
@@ -79,4 +79,10 @@ export const conversationsApi = {
     method: 'POST',
     body: JSON.stringify(messageData)
   })
+};
+
+export const api = {
+  products: productsApi,
+  users: userApi,
+  conversations: conversationsApi
 };
