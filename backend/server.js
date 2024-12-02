@@ -30,6 +30,44 @@ app.use(express.urlencoded({ extended: true }));
 // Rendre io accessible dans les routes
 app.set('io', io);
 
+// Route racine
+app.get('/', (req, res) => {
+  res.json({
+    message: 'UniVends API is running',
+    version: '1.0.0',
+    endpoints: {
+      api: '/api',
+      upload: '/api/upload'
+    },
+    status: 'healthy'
+  });
+});
+
+// Routes
+app.use('/api', apiRoutes);
+app.use('/api/upload', uploadRoutes);
+
+// Gestion des erreurs 404
+app.use((req, res) => {
+  res.status(404).json({
+    error: 'Not Found',
+    message: `La route ${req.originalUrl} n'existe pas`,
+    availableEndpoints: {
+      api: '/api',
+      upload: '/api/upload'
+    }
+  });
+});
+
+// Gestion globale des erreurs
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    error: 'Internal Server Error',
+    message: process.env.NODE_ENV === 'development' ? err.message : 'Une erreur est survenue'
+  });
+});
+
 // Connexion MongoDB
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/student-marketplace', {
   useNewUrlParser: true,
@@ -37,10 +75,6 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/student-m
 })
 .then(() => console.log('Connected to MongoDB'))
 .catch(err => console.error('MongoDB connection error:', err));
-
-// Routes
-app.use('/api', apiRoutes);
-app.use('/api/upload', uploadRoutes);
 
 // Gestion des WebSocket
 io.on('connection', (socket) => {
@@ -59,17 +93,6 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('Client disconnected:', socket.id);
   });
-});
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something broke!' });
-});
-
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({ error: 'Not Found' });
 });
 
 const PORT = process.env.PORT || 5000;
