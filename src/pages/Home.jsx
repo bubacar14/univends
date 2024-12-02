@@ -2,11 +2,6 @@ import { useState, useEffect } from 'react';
 import SearchBar from '../components/SearchBar';
 import FilterPanel from '../components/FilterPanel';
 import { api } from '../services/api';
-import { 
-  trackPageView, 
-  trackProductView, 
-  trackProductSearch 
-} from '../config/analytics';
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -21,7 +16,6 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    trackPageView('Home');
     loadProducts();
   }, [filters, searchTerm]);
 
@@ -30,20 +24,12 @@ export default function Home() {
       setLoading(true);
       const response = await api.products.getAll();
       setProducts(response);
-      
-      if (searchTerm) {
-        trackProductSearch(searchTerm);
-      }
     } catch (error) {
       console.error('Erreur lors du chargement des produits:', error);
       setError('Impossible de charger les produits');
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleProductView = (productId, productName) => {
-    trackProductView(productId, productName);
   };
 
   const handleSearch = (term) => {
@@ -86,7 +72,6 @@ export default function Home() {
             {products.map((product) => (
               <div
                 key={product._id}
-                onClick={() => handleProductView(product._id, product.title)}
                 className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow"
               >
                 <div className="aspect-w-3 aspect-h-2">
