@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 import SearchBar from '../components/SearchBar';
 import FilterPanel from '../components/FilterPanel';
 import { api } from '../services/api';
@@ -9,6 +10,7 @@ import {
 } from '../config/analytics';
 
 export default function Home() {
+  const { currentUser } = useAuth();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -21,7 +23,6 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    // Tracker la vue de page
     trackPageView('Home');
   }, []);
 
@@ -35,7 +36,6 @@ export default function Home() {
       const response = await api.products.getAll();
       setProducts(response);
       
-      // Tracker la recherche si un terme est utilisé
       if (searchTerm) {
         trackProductSearch(searchTerm);
       }
@@ -48,7 +48,6 @@ export default function Home() {
   };
 
   const handleProductView = (productId, productName) => {
-    // Tracker la vue d'un produit
     trackProductView(productId, productName);
   };
 
@@ -57,7 +56,7 @@ export default function Home() {
   };
 
   const handleFilterChange = (newFilters) => {
-    setFilters(newFilters);
+    setFilters(prev => ({ ...prev, ...newFilters }));
   };
 
   if (error) {
@@ -97,25 +96,21 @@ export default function Home() {
               >
                 <div className="aspect-w-3 aspect-h-2">
                   <img
-                    src={product.images[0]?.url}
+                    src={product.imageUrl}
                     alt={product.title}
-                    className="w-full h-full object-cover"
+                    className="object-cover w-full h-full"
                   />
                 </div>
                 <div className="p-4">
-                  <h3 className="text-lg font-medium text-gray-900 truncate">
-                    {product.title}
-                  </h3>
-                  <p className="mt-1 text-sm text-gray-500 line-clamp-2">
-                    {product.description}
-                  </p>
+                  <h3 className="text-lg font-semibold text-gray-900">{product.title}</h3>
+                  <p className="mt-1 text-gray-500">{product.description}</p>
                   <div className="mt-2 flex items-center justify-between">
-                    <p className="text-lg font-medium text-primary-600">
-                      {product.price}€
-                    </p>
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
-                      {product.category}
-                    </span>
+                    <span className="text-primary-600 font-medium">${product.price}</span>
+                    {currentUser && (
+                      <button className="text-sm text-primary-600 hover:text-primary-700">
+                        Contact Seller
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

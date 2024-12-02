@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateUser } = require('../middleware/auth');
+const upload = require('../middleware/cloudinaryUpload');
 const productController = require('../controllers/productController');
 const conversationController = require('../controllers/conversationController');
 
@@ -16,9 +17,9 @@ router.get('/products/:id', productController.getProduct);
 // Routes protégées
 router.use(authenticateUser); // Applique l'authentification à toutes les routes suivantes
 
-// Routes des produits
-router.post('/products', productController.createProduct);
-router.put('/products/:id', productController.updateProduct);
+// Routes des produits avec upload d'images
+router.post('/products', upload.array('images', 5), productController.createProduct);
+router.put('/products/:id', upload.array('images', 5), productController.updateProduct);
 router.delete('/products/:id', productController.deleteProduct);
 router.post('/products/:id/favorite', productController.toggleFavorite);
 

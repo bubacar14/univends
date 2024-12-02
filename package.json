@@ -15,6 +15,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@firebase/analytics": "^0.10.10",
     "@firebase/database": "^1.0.10",
     "@firebase/firestore": "^4.7.5",
     "@firebase/storage": "^0.13.4",

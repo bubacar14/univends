@@ -1,4 +1,5 @@
 const Product = require('../models/Product');
+const cloudinary = require('../config/cloudinary');
 
 // Obtenir tous les produits avec pagination et filtres
 exports.getProducts = async (req, res) => {
@@ -46,26 +47,46 @@ exports.getProducts = async (req, res) => {
   }
 };
 
-// Créer un nouveau produit
+// Créer un nouveau produit avec upload d'images
 exports.createProduct = async (req, res) => {
   try {
-    const { title, description, price, category, images } = req.body;
-    const seller = req.user.uid;
+    const { title, description, price, category } = req.body;
+    const files = req.files;
 
-    const product = new Product({
+    // Vérifier les champs obligatoires
+    if (!title || !description || !price || !category) {
+      return res.status(400).json({ error: 'Tous les champs sont obligatoires' });
+    }
+
+    // Uploader les images sur Cloudinary
+    const imageUrls = files ? await Promise.all(
+      files.map(async (file) => {
+        const result = await cloudinary.uploader.upload(file.path, {
+          folder: 'univends/products',
+          transformation: [
+            { width: 800, height: 600, crop: 'limit' },
+            { quality: 'auto' }
+          ]
+        });
+        return result.secure_url;
+      })
+    ) : [];
+
+    // Créer le produit
+    const newProduct = new Product({
       title,
       description,
       price,
       category,
-      images,
-      seller
+      images: imageUrls,
+      seller: req.user.uid // Utiliser l'UID de l'utilisateur authentifié
     });
 
-    await product.save();
-    res.status(201).json(product);
+    const savedProduct = await newProduct.save();
+    res.status(201).json(savedProduct);
   } catch (error) {
-    console.error('Error creating product:', error);
-    res.status(500).json({ error: 'Error creating product' });
+    console.error('Erreur lors de la création du produit:', error);
+    res.status(500).json({ error: 'Erreur lors de la création du produit' });
   }
 };
 

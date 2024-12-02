@@ -39,7 +39,10 @@ const fetchWithAuth = async (endpoint, options = {}) => {
 
 // API Products
 export const productsApi = {
-  getAll: () => fetchWithAuth('/products'),
+  getAll: async () => {
+    const response = await fetchWithAuth('/products');
+    return response.products; // Retourne uniquement le tableau de produits
+  },
   create: (productData) => fetchWithAuth('/products', {
     method: 'POST',
     body: JSON.stringify(productData)
