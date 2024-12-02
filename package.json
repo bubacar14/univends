@@ -6,9 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint .",
     "preview": "vite preview",
-    "vercel-build": "vite build"
+    "start": "vite preview",
+    "vercel-build": "vite build",
+    "render-build": "vite build",
+    "backend-start": "cd backend && npm start",
+    "backend-dev": "cd backend && npm run dev",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@firebase/database": "^1.0.10",

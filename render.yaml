@@ -1,5 +1,24 @@
 services:
   - type: web
+    name: univends-backend
+    env: node
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    envVars:
+      - key: MONGODB_URI
+        fromDatabase:
+          name: univends-mongodb
+          property: connectionString
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: FIREBASE_SERVICE_ACCOUNT
+        sync: false
+
+  - type: web
     name: univends-frontend
     env: static
     buildCommand: npm run build
@@ -9,6 +28,8 @@ services:
         source: /*
         destination: /index.html
     envVars:
+      - key: VITE_API_URL
+        value: https://univends-backend.onrender.com/api
       - key: VITE_FIREBASE_API_KEY
         sync: false
       - key: VITE_FIREBASE_AUTH_DOMAIN
@@ -23,3 +44,7 @@ services:
         sync: false
       - key: VITE_MONGODB_URI
         sync: false
+
+databases:
+  - name: univends-mongodb
+    plan: free

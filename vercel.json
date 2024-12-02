@@ -7,45 +7,33 @@
       "config": {
         "distDir": "dist"
       }
+    },
+    {
+      "src": "backend/server.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/assets/(.*)",
-      "headers": {
-        "Cache-Control": "public, max-age=31536000, immutable"
-      },
-      "dest": "/dist/assets/$1"
+      "src": "/api/(.*)",
+      "dest": "backend/server.js"
     },
     {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/"
     }
   ],
   "env": {
-    "VITE_FIREBASE_API_KEY": "@firebase_api_key",
-    "VITE_FIREBASE_AUTH_DOMAIN": "@firebase_auth_domain",
-    "VITE_FIREBASE_PROJECT_ID": "@firebase_project_id",
-    "VITE_FIREBASE_STORAGE_BUCKET": "@firebase_storage_bucket",
-    "VITE_FIREBASE_MESSAGING_SENDER_ID": "@firebase_messaging_sender_id",
-    "VITE_FIREBASE_APP_ID": "@firebase_app_id",
-    "VITE_MONGODB_URI": "@mongodb_uri"
+    "VITE_API_URL": "@api_url",
+    "MONGODB_URI": "@mongodb_uri",
+    "CLOUDINARY_CLOUD_NAME": "@cloudinary_cloud_name",
+    "CLOUDINARY_API_KEY": "@cloudinary_api_key",
+    "CLOUDINARY_API_SECRET": "@cloudinary_api_secret",
+    "FIREBASE_SERVICE_ACCOUNT": "@firebase_service_account"
   },
   "build": {
     "env": {
-      "VITE_FIREBASE_API_KEY": "@firebase_api_key",
-      "VITE_FIREBASE_AUTH_DOMAIN": "@firebase_auth_domain",
-      "VITE_FIREBASE_PROJECT_ID": "@firebase_project_id",
-      "VITE_FIREBASE_STORAGE_BUCKET": "@firebase_storage_bucket",
-      "VITE_FIREBASE_MESSAGING_SENDER_ID": "@firebase_messaging_sender_id",
-      "VITE_FIREBASE_APP_ID": "@firebase_app_id",
-      "VITE_MONGODB_URI": "@mongodb_uri"
+      "VITE_API_URL": "@api_url"
     }
-  },
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ]
+  }
 }
