@@ -13,7 +13,7 @@
     {
       "src": "/assets/(.*)",
       "headers": {
-        "Content-Type": "application/javascript"
+        "Cache-Control": "public, max-age=31536000, immutable"
       },
       "dest": "/dist/assets/$1"
     },
@@ -23,13 +23,29 @@
     }
   ],
   "env": {
-    "VITE_API_URL": "https://univends-api.onrender.com/api",
-    "VITE_WS_URL": "wss://univends-api.onrender.com/",
-    "VITE_FIREBASE_API_KEY": "${VITE_FIREBASE_API_KEY}",
-    "VITE_FIREBASE_AUTH_DOMAIN": "${VITE_FIREBASE_AUTH_DOMAIN}",
-    "VITE_FIREBASE_PROJECT_ID": "${VITE_FIREBASE_PROJECT_ID}",
-    "VITE_FIREBASE_STORAGE_BUCKET": "${VITE_FIREBASE_STORAGE_BUCKET}",
-    "VITE_FIREBASE_MESSAGING_SENDER_ID": "${VITE_FIREBASE_MESSAGING_SENDER_ID}",
-    "VITE_FIREBASE_APP_ID": "${VITE_FIREBASE_APP_ID}"
-  }
+    "VITE_FIREBASE_API_KEY": "@firebase_api_key",
+    "VITE_FIREBASE_AUTH_DOMAIN": "@firebase_auth_domain",
+    "VITE_FIREBASE_PROJECT_ID": "@firebase_project_id",
+    "VITE_FIREBASE_STORAGE_BUCKET": "@firebase_storage_bucket",
+    "VITE_FIREBASE_MESSAGING_SENDER_ID": "@firebase_messaging_sender_id",
+    "VITE_FIREBASE_APP_ID": "@firebase_app_id",
+    "VITE_MONGODB_URI": "@mongodb_uri"
+  },
+  "build": {
+    "env": {
+      "VITE_FIREBASE_API_KEY": "@firebase_api_key",
+      "VITE_FIREBASE_AUTH_DOMAIN": "@firebase_auth_domain",
+      "VITE_FIREBASE_PROJECT_ID": "@firebase_project_id",
+      "VITE_FIREBASE_STORAGE_BUCKET": "@firebase_storage_bucket",
+      "VITE_FIREBASE_MESSAGING_SENDER_ID": "@firebase_messaging_sender_id",
+      "VITE_FIREBASE_APP_ID": "@firebase_app_id",
+      "VITE_MONGODB_URI": "@mongodb_uri"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }
