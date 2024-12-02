@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '../contexts/AuthContext';
 import SearchBar from '../components/SearchBar';
 import FilterPanel from '../components/FilterPanel';
 import { api } from '../services/api';
@@ -10,7 +9,6 @@ import {
 } from '../config/analytics';
 
 export default function Home() {
-  const { currentUser } = useAuth();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -24,9 +22,6 @@ export default function Home() {
 
   useEffect(() => {
     trackPageView('Home');
-  }, []);
-
-  useEffect(() => {
     loadProducts();
   }, [filters, searchTerm]);
 
@@ -106,11 +101,6 @@ export default function Home() {
                   <p className="mt-1 text-gray-500">{product.description}</p>
                   <div className="mt-2 flex items-center justify-between">
                     <span className="text-primary-600 font-medium">${product.price}</span>
-                    {currentUser && (
-                      <button className="text-sm text-primary-600 hover:text-primary-700">
-                        Contact Seller
-                      </button>
-                    )}
                   </div>
                 </div>
               </div>
