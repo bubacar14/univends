@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "description": "Backend pour l'application de marketplace étudiante",
   "main": "server.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "build": "npm install && npm audit fix --force"
+    "build": "npm install"
   },
   "dependencies": {
     "cloudinary": "^1.41.3",
