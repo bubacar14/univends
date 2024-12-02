@@ -4,6 +4,11 @@ const { authenticateUser } = require('../middleware/auth');
 const productController = require('../controllers/productController');
 const conversationController = require('../controllers/conversationController');
 
+// Route de base pour vérifier que l'API fonctionne
+router.get('/', (req, res) => {
+  res.json({ message: 'API is running' });
+});
+
 // Routes publiques des produits
 router.get('/products', productController.getProducts);
 router.get('/products/:id', productController.getProduct);
