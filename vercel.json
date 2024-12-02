@@ -11,12 +11,25 @@
   ],
   "routes": [
     {
+      "src": "/assets/(.*)",
+      "headers": {
+        "Content-Type": "application/javascript"
+      },
+      "dest": "/dist/assets/$1"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/"
+      "dest": "/index.html"
     }
   ],
   "env": {
-    "VITE_API_URL": "https://your-backend-url.onrender.com/api",
-    "VITE_WS_URL": "wss://your-backend-url.onrender.com"
+    "VITE_API_URL": "https://univends-api.onrender.com/api",
+    "VITE_WS_URL": "wss://univends-api.onrender.com/",
+    "VITE_FIREBASE_API_KEY": "${VITE_FIREBASE_API_KEY}",
+    "VITE_FIREBASE_AUTH_DOMAIN": "${VITE_FIREBASE_AUTH_DOMAIN}",
+    "VITE_FIREBASE_PROJECT_ID": "${VITE_FIREBASE_PROJECT_ID}",
+    "VITE_FIREBASE_STORAGE_BUCKET": "${VITE_FIREBASE_STORAGE_BUCKET}",
+    "VITE_FIREBASE_MESSAGING_SENDER_ID": "${VITE_FIREBASE_MESSAGING_SENDER_ID}",
+    "VITE_FIREBASE_APP_ID": "${VITE_FIREBASE_APP_ID}"
   }
 }
