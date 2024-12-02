@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression');
+const apiRouter = require('./routes/api');
 
 const app = express();
 
@@ -24,13 +25,8 @@ app.get('/', (req, res) => {
   });
 });
 
-// Route de test
-app.get('/api/test', (req, res) => {
-  res.json({
-    message: 'API test endpoint working',
-    timestamp: new Date().toISOString()
-  });
-});
+// Utiliser le routeur API
+app.use('/api', apiRouter);
 
 // Gestion des erreurs 404
 app.use((req, res) => {
